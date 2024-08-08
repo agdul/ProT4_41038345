@@ -7,11 +7,9 @@ const getAll = async (req, res) => {
     }catch(error){
         res.status(500).json({error: 'Error al obtener los libros', detalle: error});
     }
-
 }
 
 const addLibro = async (req, res) => {
-    console.log(req);
     const { nombre, autor, categoria, "año-publicacion": añoPublicacion, ISBN} = req.body;
 
     if (!nombre || !autor || !categoria || !añoPublicacion || !ISBN ){
@@ -33,6 +31,7 @@ const addLibro = async (req, res) => {
         res.status(500).json({ error: "Error al agregar el libro", error: error.message });
     }
 }
+
 const getLibroId = async (req, res) =>{
     const libroId = req.params.id;
     try {
