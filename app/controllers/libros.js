@@ -49,14 +49,21 @@ const getLibroId = async (req, res) =>{
 const updateLibro = async(req, res) => {
     const libroId = req.params.id;
     try {
-        const [affectedRows] = await Libros.update({
-            nombre: req.body.nombre,
-            autor: req.body.autor,
-            categoria: req.body.categoria,
-            'año-publicacion': req.body.añoPublicacion,
-            ISBN: req.body.ISBN,
-        },
-        {
+        const libro = await Libros.findByPk(libroId);
+        if(!libro){
+            console.log('No se encontró ningún libro con el ID especificado');
+            return res.status(404).json({message: 'No se encontro el ID especificado'});
+        }
+
+        const updateData = {
+            nombre: req.body.nombre || libro.nombre,
+            autor: req.body.autor || libro.autor,
+            categoria: req.body.categoria || libro.categoria,
+            'año-publicacion': req.body.añoPublicacion || libro['año-publicacion'],
+            ISBN: req.body.ISBN || libro.ISBN,
+        };
+
+        const [affectedRows] = await Libros.update(updateData, {
             where: {id: libroId}
         });
 
@@ -67,6 +74,7 @@ const updateLibro = async(req, res) => {
             console.log('No se encontró ningún libro con el ID especificado');
             res.status(404).json({message:'No se encontro el ID del Libro'});
         }
+
     } catch (error) {
         console.error('Error al actualizar el libro:', error.message);
         res.status(500).json({message:'No se encontro el ID del Libro', error: error.message});
